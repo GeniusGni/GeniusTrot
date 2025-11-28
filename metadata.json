@@ -1,0 +1,5 @@
+{
+  "name": "Tarot",
+  "description": "A mystical, AI-powered Tarot reading application featuring the Sacred Triangle spread. Experiences a complete divination process with random draws, upright/reversed mechanics, and deep, philosophical interpretations via Gemini.",
+  "requestFramePermissions": []
+}
