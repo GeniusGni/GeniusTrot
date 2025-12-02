@@ -14,33 +14,72 @@ const StarsBackground: React.FC = () => {
     canvas.width = width;
     canvas.height = height;
 
-    const stars: { x: number; y: number; radius: number; alpha: number; speed: number }[] = [];
-    const count = 150;
+    // Particle definition
+    interface Star {
+      x: number;
+      y: number;
+      radius: number;
+      baseRadius: number;
+      color: string;
+      vx: number;
+      vy: number;
+      pulseSpeed: number;
+      pulseOffset: number;
+    }
+
+    const stars: Star[] = [];
+    const count = 100;
+
+    // Palette: Gold, Cream, White (Elegant/Mystic)
+    const colors = ['#D4A523', '#F0DEAA', '#FFFFFF', '#AA841C'];
 
     for (let i = 0; i < count; i++) {
+      const baseRadius = Math.random() * 1.5 + 0.5;
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() * 1.5,
-        alpha: Math.random(),
-        speed: Math.random() * 0.05,
+        radius: baseRadius,
+        baseRadius: baseRadius,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 0.2, // Slow horizontal drift
+        vy: (Math.random() - 0.5) * 0.2, // Slow vertical drift
+        pulseSpeed: Math.random() * 0.05 + 0.01,
+        pulseOffset: Math.random() * Math.PI * 2,
       });
     }
 
     const animate = () => {
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = '#0a0a0a';
+      // Trail effect
+      ctx.fillStyle = 'rgba(5, 5, 10, 0.15)'; 
       ctx.fillRect(0, 0, width, height);
 
-      stars.forEach((star) => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(212, 165, 35, ${star.alpha})`; // Gold tint
-        ctx.fill();
+      const time = Date.now() * 0.001;
 
-        star.alpha += star.speed * (Math.random() > 0.5 ? 1 : -1);
-        if (star.alpha <= 0) star.alpha = 0;
-        if (star.alpha >= 1) star.alpha = 1;
+      stars.forEach((star) => {
+        // Update position
+        star.x += star.vx;
+        star.y += star.vy;
+
+        // Wrap around screen
+        if (star.x < 0) star.x = width;
+        if (star.x > width) star.x = 0;
+        if (star.y < 0) star.y = height;
+        if (star.y > height) star.y = 0;
+
+        // Pulse size
+        star.radius = star.baseRadius + Math.sin(time * star.pulseSpeed + star.pulseOffset) * 0.5;
+
+        // Draw
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, Math.max(0, star.radius), 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+        
+        // Add a slight glow
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = star.color;
+        
+        ctx.fill();
+        ctx.shadowBlur = 0; // Reset
       });
 
       requestAnimationFrame(animate);

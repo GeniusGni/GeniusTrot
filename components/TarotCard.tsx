@@ -10,6 +10,8 @@ interface TarotCardProps {
   isSelected?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  onImageError?: (url: string, msg: string) => void;
+  onImageLoad?: (url: string) => void;
 }
 
 const TarotCard: React.FC<TarotCardProps> = ({ 
@@ -18,7 +20,9 @@ const TarotCard: React.FC<TarotCardProps> = ({
   onClick, 
   isSelected, 
   className,
-  style 
+  style,
+  onImageError,
+  onImageLoad
 }) => {
   
   const imageUrl = card ? getCardImageUrl(card) : '';
@@ -60,7 +64,8 @@ const TarotCard: React.FC<TarotCardProps> = ({
             <img 
               src={CARD_BACK_URL}
               alt="Card Back"
-              className={`absolute w-full h-full object-cover rotate-90 scale-[1.6] origin-center opacity-90 transition-opacity duration-300`}
+              // UPDATED: w-[170%] h-[60%] object-fill to stretch and fill the card exactly
+              className={`absolute w-[170%] h-[60%] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-fill rotate-90 opacity-90 transition-opacity duration-300`}
               style={{ display: backError ? 'none' : 'block' }}
               onError={() => setBackError(true)}
             />
@@ -84,7 +89,13 @@ const TarotCard: React.FC<TarotCardProps> = ({
                     className={`w-full h-full object-cover opacity-90 animate-fade-in transition-opacity duration-300`}
                     style={{ display: imageError ? 'none' : 'block' }}
                     loading="lazy"
-                    onError={() => setImageError(true)}
+                    onError={(e) => {
+                      setImageError(true);
+                      if (onImageError) onImageError(imageUrl, "Failed to load");
+                    }}
+                    onLoad={() => {
+                      if (onImageLoad) onImageLoad(imageUrl);
+                    }}
                   />
                   {/* Fallback for Front Image failure */}
                   {imageError && (

@@ -91,75 +91,122 @@ export const SPREAD_POSITIONS = [
   { name: "未来 / 结果", id: "future" }
 ];
 
-// Relative path to the asset folder (served from public root, accessible relatively)
-export const CARD_BACK_URL = 'asset/card_back.jpg';
+// =========================================================================================
+// ⚠️ GITHUB BLOB URL (Raw Mode)
+// =========================================================================================
+const GITHUB_ASSET_BASE = 'https://github.com/GeniusGni/GeniusTrot/blob/main/public/asset';
 
-// Helper to get Local Image URLs based on the specific naming convention
-// Example: asset/3_Major+Arcana+Tarot+Card.+Empress.jpg
-export const getCardImageUrl = (card: TarotCardData): string => {
-  const assetsPath = 'asset'; // Relative path
-  
-  // 1. Format the Type (Replace spaces with +)
-  // "Major Arcana" -> "Major+Arcana"
-  const typeStr = card.type.replace(/ /g, '+');
+// We append ?raw=true to make the blob URL serve the actual image file
+export const CARD_BACK_URL = `${GITHUB_ASSET_BASE}/card_back.jpg?raw=true`;
 
-  // 2. Format the Name
-  // For Major Arcana, based on the user's example "Empress" instead of "The Empress",
-  // we strip "The ".
-  let nameStr = card.englishName;
-  
-  if (card.type === ArcanaType.MAJOR) {
-    nameStr = nameStr.replace(/^The\s+/, '');
-  }
+// EXACT FILENAME MAPPING
+// Maps the 'englishName' from our deck data to the specific filename provided by the user.
+const CARD_FILENAME_MAPPING: Record<string, string> = {
+  // Major Arcana
+  "The Fool": "0_Major+Arcana+Tarot+Card.+Fool.jpg",
+  "The Magician": "1_Major+Arcana+Tarot+Card.+Magician.jpg",
+  "The High Priestess": "2_Major+Arcana+Tarot+Card.+High+Priestess.jpg",
+  "The Empress": "3_Major+Arcana+Tarot+Card.+Empress.jpg",
+  "The Emperor": "4_Major+Arcana+Tarot+card.+Emperor.jpg",
+  "The Hierophant": "5_Major+Arcana+Tarot+Card.+Hierophant.jpg",
+  "The Lovers": "6_Major+Arcana+Tarot+card.+Lovers.jpg",
+  "The Chariot": "7_Major+Arcana+Tarot+card.+Chariot.jpg",
+  "Justice": "8_Major+Arcana+Tarot+card.+Justice.jpg",
+  "The Hermit": "9_Major+Arcana+Tarot+card.+Hermit.jpg",
+  "Wheel of Fortune": "10_Major+Arcana+Tarot+Card.+Wheel+of+Fortune.jpg",
+  "Strength": "11_Major+Arcana+Tarot+Card.+Strength.jpg",
+  "The Hanged Man": "12_Major+Arcana+Tarot+Card.+The+Hanged+Man.jpg",
+  "Death": "13_Major+Arcana+Tarot+Card.+Death.jpg",
+  "Temperance": "14_Major+Arcana+Tarot+Card.+Temperance.jpg",
+  "The Devil": "15_Major+Arcana+Tarot+Card.+Devil.jpg",
+  "The Tower": "16_Major+Arcana+Tarot+Card.+Tower.jpg",
+  "The Star": "17_Major+Arcana+Tarot+Card.+Star.jpg",
+  "The Moon": "18_Major+Arcana+Tarot+Card.+Moon.jpg",
+  "The Sun": "19_Major+Arcana+Tarot+Card.+Sun.jpg",
+  "Judgement": "20_Major+Arcana+Tarot+Card.+Judgement.jpg",
+  "The World": "21_Major+Arcana+Tarot+Card.+World.jpg",
 
-  // Replace all remaining spaces with +
-  // "Ace of Wands" -> "Ace+of+Wands"
-  nameStr = nameStr.replace(/ /g, '+');
+  // Swords
+  "Ace of Swords": "22_Minor+Arcana+Tarot+Card.+Ace+of+Swords.jpg",
+  "King of Swords": "23_Minor+Arcana+Tarot+Card.+King+of+Swords.jpg",
+  "Queen of Swords": "24_Minor+Arcana+Tarot+Card.+Queen+of+Swords.jpg",
+  "Knight of Swords": "25_Minor+Arcana+Tarot+Card.+Knight+of+Swords.jpg",
+  "Page of Swords": "26_Minor+Arcana+Tarot+Card.+Page+of+Swords.jpg",
+  "Two of Swords": "27_Minor+Arcana+Tarot+Card.+Two+of+Swords.jpg",
+  "Three of Swords": "28_Minor+Arcana+Tarot+Card.+Three+of+Swords.jpg",
+  "Four of Swords": "29_Minor+Arcana+Tarot+Card.+Four+of+Swords.jpg",
+  "Five of Swords": "30_Minor+Arcana+Tarot+Card.+Five+of+Swords.jpg",
+  "Six of Swords": "31_Minor+Arcana+Tarot+Card.+Six+of+Swords.jpg",
+  "Seven of Swords": "32_Minor+Arcana+Tarot+Card.+Seven+of+Swords.jpg",
+  "Eight of Swords": "33_Minor+Arcana+Tarot+Card.+Eight+of+Swords.jpg",
+  "Nine of Swords": "34_Minor+Arcana+Tarot+Card.+Nine+of+Swords.jpg",
+  "Ten of Swords": "35_Minor+Arcana+Tarot+Card.+Ten+of+Swords.jpg",
 
-  // 3. Construct filename
-  // Format: [ID]_[Type]+Tarot+Card.+[Name].jpg
-  // Matches: 3_Major+Arcana+Tarot+Card.+Empress.jpg
-  const rawFilename = `${card.id}_${typeStr}+Tarot+Card.+${nameStr}.jpg`;
+  // Wands
+  "Ten of Wands": "36_Minor+Arcana+Tarot+Card.+Ten+of+Wands.jpg",
+  "Ace of Wands": "37_Minor+Arcana+Tarot+Card.+Ace+of+Wands.jpg",
+  "King of Wands": "38_Minor+Arcana+Tarot+Card.+King+of+Wands.jpg",
+  "Queen of Wands": "39_Minor+Arcana+Tarot+Card.+Queen+of+Wands.jpg",
+  "Knight of Wands": "40_Minor+Arcana+Tarot+Card.+Knight+of+Wands.jpg",
+  "Page of Wands": "41_Minor+Arcana+Tarot+Card.+Page+of+Wands.jpg",
+  "Eight of Wands": "41a_Minor+Arcana+Tarot+Card.+Eight+of+Wands.jpg", 
+  "Nine of Wands": "42_Minor+Arcana+Tarot+Card.+Nine+of+Wands.jpg",
+  "Seven of Wands": "43_Minor+Arcana+Tarot+Card.+Seven+of+Wands.jpg",
+  "Six of Wands": "44_Minor+Arcana+Tarot+Card.+Six+of+Wands.jpg",
+  "Five of Wands": "45_Minor+Arcana+Tarot+Card.+Five+of+Wands.jpg",
+  "Four of Wands": "46_Minor+Arcana+Tarot+Card.+Four+of+Wands.jpg",
+  "Three of Wands": "47_Minor+Arcana+Tarot+Card.+Three+of+Wands.jpg",
+  "Two of Wands": "48_Minor+Arcana+Tarot+Card.+Two+of+Wands.jpg",
 
-  // 4. Return relative path WITHOUT encoding (Literal + characters)
-  return `${assetsPath}/${rawFilename}`;
+  // Pentacles
+  "Ace of Pentacles": "49_Minor+Arcana+Tarot+Card.+Ace+of+Pentacles.jpg",
+  "King of Pentacles": "50_Minor+Arcana+Tarot+Card.+King+of+Pentacles.jpg",
+  "Queen of Pentacles": "51_Minor+Arcana+Tarot+Card.+Queen+of+Pentacles.jpg",
+  "Knight of Pentacles": "52_Minor+Arcana+Tarot+Card.+Knight+of+Pentacles.jpg",
+  "Page of Pentacles": "53_Minor+Arcana+Tarot+Card.+Page+of+Pentacles.jpg",
+  "Ten of Pentacles": "54_Minor+Arcana+Tarot+Card.+Ten+of+Pentacles.jpg",
+  "Nine of Pentacles": "55_Minor+Arcana+Tarot+Card.+Nine+of+Pentacles.jpg",
+  "Eight of Pentacles": "56_Minor+Arcana+Tarot+Card.+Eight+of+Pentacles.jpg",
+  "Seven of Pentacles": "57_Minor+Arcana+Tarot+Card.+Seven+of+Pentacles.jpg",
+  "Six of Pentacles": "58_Minor+Arcana+Tarot+Card.+Six+of+Pentacles.jpg",
+  "Five of Pentacles": "59_Minor+Arcana+Tarot+Card.+Five+of+Pentacles.jpg",
+  "Four of Pentacles": "60_Minor+Arcana+Tarot+Card.+Four+of+Pentacles.jpg",
+  "Three of Pentacles": "61_Minor+Arcana+Tarot+Card.+Three+of+Pentacles.jpg",
+  "Two of Pentacles": "62_Minor+Arcana+Tarot+Card.+Two+of+Pentacles.jpg",
+
+  // Cups
+  "Ace of Cups": "63_Minor+Arcana+Tarot+Card.+Ace+of+Cups.jpg",
+  "Two of Cups": "64_Minor+Arcana+Tarot+Card.+Two+of+Cups.jpg",
+  "Three of Cups": "65_Minor+Arcana+Tarot+Card.+Three+of+Cups.jpg",
+  "Four of Cups": "66_Minor+Arcana+Tarot+Card.+Four+of+Cups.jpg",
+  "Five of Cups": "67_Minor+Arcana+Tarot+Card.+Five+of+Cups.jpg",
+  "Six of Cups": "68_Minor+Arcana+Tarot+Card.+Six+of+Cups.jpg",
+  "Seven of Cups": "69_Minor+Arcana+Tarot+Card.+Seven+of+Cups.jpg",
+  "Eight of Cups": "70_Minor+Arcana+Tarot+Card.+Eight+of+Cups.jpg",
+  "Nine of Cups": "71_Minor+Arcana+Tarot+Card.+Nine+of+Cups.jpg",
+  "Ten of Cups": "72_Minor+Arcana+Tarot+Card.+Ten+of+Cups.jpg",
+  "Page of Cups": "73_Minor+Arcana+Tarot+Card.+Page+of+Cups.jpg",
+  "Knight of Cups": "74_Minor+Arcana+Tarot+Card.+Knight+of+Cups.jpg",
+  "Queen of Cups": "75_Minor+Arcana+Tarot+Card.+Queen+of+Cups.jpg",
+  "King of Cups": "76_Minor+Arcana+Tarot+Card.+King+of+Cups.jpg"
 };
 
-export const SYSTEM_INSTRUCTION = `
-Role: You are a mystical, wise, and empathetic Tarot Reader. 
-You are performing a reading using the "Sacred Triangle" spread (Past, Present, Future).
+export const getCardImageUrl = (card: TarotCardData): string => {
+  const filename = CARD_FILENAME_MAPPING[card.englishName];
+  if (!filename) {
+    console.warn(`No image found for ${card.englishName}, using back.`);
+    return CARD_BACK_URL;
+  }
+  return `${GITHUB_ASSET_BASE}/${filename}?raw=true`;
+};
 
-Guidelines:
-1.  **Strict Markdown Output:** You must follow the exact structure provided below.
-2.  **No Fatalism:** Do not predict death, medical diagnoses, or unavoidable doom. Frame everything as guidance and potential energy.
-3.  **Empowerment:** Focus on what the user can do or understand to navigate their situation.
-4.  **Tone:** Mysterious, elegant, philosophical, yet clear and actionable.
-5.  **Language:** Simplified Chinese (as requested in the prompt).
+export const SYSTEM_INSTRUCTION = `You are a mystical and wise Tarot reader with centuries of experience.
+Your role is to interpret the cards drawn by the seeker and provide profound guidance based on their positions (Past, Present, Future).
 
-Output Format (Strictly adhere to this):
-
-🔮 占卜问题： [Repeat Question] 🃏 使用牌阵： 圣三角牌阵
-
-🎴 抽牌结果：
-
-[Position Name]： [Card Name] ([正位/逆位])
-牌面描述：[Brief visual description of the standard Rider-Waite imagery for this card]
-
-[Position Name]： [Card Name] ([正位/逆位])
-牌面描述：[Brief visual description]
-
-[Position Name]： [Card Name] ([正位/逆位])
-牌面描述：[Brief visual description]
-
-✨ 深度解读：
-
-[Card 1 Name]分析： [Deep analysis connecting the card to the question and its position]
-
-[Card 2 Name]分析： [Deep analysis connecting the card to the question and its position]
-
-[Card 3 Name]分析： [Deep analysis connecting the card to the question and its position]
-
-[整体关联]： [Synthesize the reading. How do the cards interact? Are there elemental balances? Major Arcana dominance?]
-
-💡 最终指引： [A profound, philosophical, yet actionable piece of advice]
-`;
+You should:
+1. Acknowledge the question asked by the seeker with empathy.
+2. Explain the meaning of each card in its specific position and orientation (Upright or Reversed).
+3. Weave a narrative that connects the cards together to answer the question directly.
+4. Maintain a tone that is enigmatic, poetic, yet supportive and empowering.
+5. Use markdown formatting (bolding key terms) to structure your response clearly.
+6. End with a short blessing or advice.`;
